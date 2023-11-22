@@ -10,12 +10,12 @@ using namespace std;
 /// <Constantes>
 const int LS = 50; // Tamanho limite de strings
 
-#ifndef UNLEN
+#ifndef UNLEN // Verifica se UNLEN já foi definido
 #define UNLEN 256
 #endif
 
-extern "C" {
-	WINBASEAPI BOOL WINAPI GetUserNameA(LPSTR, LPDWORD);
+extern "C" { 
+	WINBASEAPI BOOL WINAPI GetUserNameA(LPSTR, LPDWORD); // Obter o nome do usuário associado ao processo
 }
 
 /// <Protótipos>
@@ -38,7 +38,7 @@ int main() {
 
 void chamaMenu() {
 	int opcao;
-	_TCHAR directoryPath[LS];
+	_TCHAR directoryPath[LS]; //Armazena o diretório do desktop do usuário atual
 	do {
 		system("CLS");
 		cout << "\tMenu de Opcoes" << endl
@@ -69,7 +69,7 @@ void chamaMenu() {
 int criarNota(_TCHAR directoryPath[LS]) {
 	char titulo[LS];
 	char diretorioDeCriacao[LS];
-	getUserName(diretorioDeCriacao);
+	getUserName(diretorioDeCriacao); // 
 	cout << " | Qual o titulo da nota que deseja criar?" << endl;
 	cin >> titulo;
 	strcat(diretorioDeCriacao, titulo);
@@ -95,9 +95,9 @@ void alteraNota() {
 }
 
 int dir(const _TCHAR* directoryPath) {
-	const std::basic_string<_TCHAR> targetExtension = _T(".bin");
+	const std::basic_string<_TCHAR> targetExtension = _T(".bin"); // Definindo a extensão dos arquivos
 
-	WIN32_FIND_DATA findFileData;
+	WIN32_FIND_DATA findFileData; // Struct para armazenar os dados do arquivo encontrado
 	HANDLE hFind = FindFirstFile((std::basic_string<_TCHAR>(directoryPath) + _T("\\*")).c_str(), &findFileData);
 
 	if (hFind == INVALID_HANDLE_VALUE) {
@@ -105,20 +105,20 @@ int dir(const _TCHAR* directoryPath) {
 		return -1;
 	}
 
-	do {
-		std::basic_string<_TCHAR> fileName = findFileData.cFileName;
-		size_t extPos = fileName.find_last_of(_T('.'));
+	do { // Fazendo a iteração sobre os arquivos do diretório
+		std::basic_string<_TCHAR> fileName = findFileData.cFileName; // Obtém o nome do arquivo atual
+		size_t extPos = fileName.find_last_of(_T('.')); // Encontra a posição do último ponto no nome do arquivo. Usado para identificar a extensão
 
-		if (extPos != std::basic_string<_TCHAR>::npos) {
-			std::basic_string<_TCHAR> fileExtension = fileName.substr(extPos);
+		if (extPos != std::basic_string<_TCHAR>::npos) { // Se a extensão existe
+			std::basic_string<_TCHAR> fileExtension = fileName.substr(extPos); // armazena ela em fileExtension
 
-			if (fileExtension == targetExtension) {
+			if (fileExtension == targetExtension) { // Compara a extensão do arquivo com a extensão definida acima
 				std::wcout << findFileData.cFileName << std::endl;
 			}
 		}
-	} while (FindNextFile(hFind, &findFileData) != 0);
+	} while (FindNextFile(hFind, &findFileData) != 0); // Executa enquanto existir arquivos a serem analisados
 
-	FindClose(hFind);
+	FindClose(hFind); // Fecha o identificador
 	return 0;
 }
 
@@ -135,7 +135,7 @@ void getUserName(char diretorioDeCriacao[]) {
 	geraDiretorio(username, diretorioDeCriacao);
 }
 
-// Define todo o caminho onde o arquivo será salvo
+// Define o caminho onde o arquivo será salvo
 void geraDiretorio(char username[], char diretorioDeCriacao[]) {
 	strcpy(diretorioDeCriacao, "");
 	strcat(diretorioDeCriacao, "C:\\Users\\");
