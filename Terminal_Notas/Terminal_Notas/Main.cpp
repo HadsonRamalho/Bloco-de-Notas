@@ -7,8 +7,9 @@
 
 using namespace std;
 
-/// <Constantes>
+/// <Constantes e globais>
 const int LS = 50; // Tamanho limite de strings
+char diretorioDeCriacao[LS];
 
 #ifndef UNLEN // Verifica se UNLEN já foi definido
 #define UNLEN 256
@@ -24,6 +25,7 @@ int criarNota(_TCHAR  directoryPath[LS]);
 void getUserName(char diretorioDeCriacao[]);
 void geraDiretorio(char username[], char diretorioDeCriacao[]);
 int dir(const _TCHAR* directoryPath);
+void excluirArquivo(char diretorioDeCriacao[]);
 
 /// <Objetos>
 ofstream fout;
@@ -52,6 +54,9 @@ void chamaMenu() {
 		switch (opcao) {
 		case 1:
 			criarNota(directoryPath);
+			break;
+		case 2:
+			excluirArquivo(diretorioDeCriacao);
 			break;
 		case 4:
 			dir(directoryPath);
@@ -95,25 +100,28 @@ void alteraNota() {
 }
 
 int dir(const _TCHAR* directoryPath) {
-	const std::basic_string<_TCHAR> targetExtension = _T(".bin"); // Definindo a extensão dos arquivos
+
+	cout << " | Notas no diretorio: " << endl;
+
+	const basic_string<_TCHAR> targetExtension = _T(".bin"); // Definindo a extensão dos arquivos
 
 	WIN32_FIND_DATA findFileData; // Struct para armazenar os dados do arquivo encontrado
-	HANDLE hFind = FindFirstFile((std::basic_string<_TCHAR>(directoryPath) + _T("\\*")).c_str(), &findFileData);
+	HANDLE hFind = FindFirstFile((basic_string<_TCHAR>(directoryPath) + _T("\\*")).c_str(), &findFileData);
 
 	if (hFind == INVALID_HANDLE_VALUE) {
-		std::cerr << "Erro ao abrir o diretório" << std::endl;
+		cerr << "Erro ao abrir o diretorio" << endl;
 		return -1;
 	}
 
 	do { // Fazendo a iteração sobre os arquivos do diretório
-		std::basic_string<_TCHAR> fileName = findFileData.cFileName; // Obtém o nome do arquivo atual
+		basic_string<_TCHAR> fileName = findFileData.cFileName; // Obtém o nome do arquivo atual
 		size_t extPos = fileName.find_last_of(_T('.')); // Encontra a posição do último ponto no nome do arquivo. Usado para identificar a extensão
 
-		if (extPos != std::basic_string<_TCHAR>::npos) { // Se a extensão existe
-			std::basic_string<_TCHAR> fileExtension = fileName.substr(extPos); // armazena ela em fileExtension
+		if (extPos != basic_string<_TCHAR>::npos) { // Se a extensão existe
+			basic_string<_TCHAR> fileExtension = fileName.substr(extPos); // armazena ela em fileExtension
 
 			if (fileExtension == targetExtension) { // Compara a extensão do arquivo com a extensão definida acima
-				std::wcout << findFileData.cFileName << std::endl;
+				wcout << findFileData.cFileName << endl;
 			}
 		}
 	} while (FindNextFile(hFind, &findFileData) != 0); // Executa enquanto existir arquivos a serem analisados
@@ -141,4 +149,38 @@ void geraDiretorio(char username[], char diretorioDeCriacao[]) {
 	strcat(diretorioDeCriacao, "C:\\Users\\");
 	strcat(diretorioDeCriacao, username);
 	strcat(diretorioDeCriacao, "\\Desktop\\");
+}
+
+void excluirArquivo(char diretorioDeCriacao[]) {
+	char arquivo_a_Excluir[LS];
+	char username[LS];
+	cout << " | Digite o nome do arquivo que deseja excluir [Sem a extensao]:";
+	cin >> arquivo_a_Excluir;
+	cout << " | Tem certeza?" << endl
+		<< " 1 - Sim\t2 - Nao" << endl;
+	int opcao;
+	cin >> opcao;
+	switch (opcao) {
+	case 1:
+		cout << " | Seguindo com a exclusao" << endl;
+		break;
+	case 2:
+		cout << " | Exclusao cancelada" << endl;
+		system("PAUSE");
+		return;
+	default:
+		cerr << " | Opcao invalida. Cancelando." << endl;
+		return;
+	}
+	getUserName(diretorioDeCriacao);
+	strcat(diretorioDeCriacao, arquivo_a_Excluir);
+	strcat(diretorioDeCriacao, ".bin");
+	strcpy(arquivo_a_Excluir, diretorioDeCriacao); // arquivo_a_Excluir agora armazena o diretório completo, incluindo o nome e extensão
+	cout << arquivo_a_Excluir << endl;
+	// Verifica se o arquivo existe antes de tentar excluir
+	if (remove(arquivo_a_Excluir) != 0) { 
+		cerr << "Erro ao excluir o arquivo." << endl;
+		return;
+	}
+	cout << "Arquivo excluido com sucesso." << endl;
 }
