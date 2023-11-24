@@ -9,8 +9,9 @@
 using namespace std;
 
 /// <Constantes e globais>
-const int LS = 50; // Tamanho limite de strings
+const int LS = 150; // Tamanho limite de strings
 char diretorioDeCriacao[LS];
+int t = 0; // Controla o tamanho de exibição da função de alterar notas
 
 #ifndef UNLEN // Verifica se UNLEN já foi definido
 #define UNLEN 256
@@ -182,7 +183,7 @@ void excluirArquivo(char diretorioDeCriacao[]) {
 	}
 	cout << "Arquivo excluido com sucesso." << endl;
 }
-int t = 0;
+
 void alteraNota(char diretorioDeCriacao[]) {
 	char titulo[LS];
 	_TCHAR directoryPathh[LS];
