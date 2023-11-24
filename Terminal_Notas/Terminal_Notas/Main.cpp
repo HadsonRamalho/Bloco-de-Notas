@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string.h>
+#include <string>
 #include <tchar.h>
 #include <windows.h>
 #include <shlobj.h> // Para SHGetFolderPath
@@ -26,6 +27,7 @@ void getUserName(char diretorioDeCriacao[]);
 void geraDiretorio(char username[], char diretorioDeCriacao[]);
 int dir(const _TCHAR* directoryPath);
 void excluirArquivo(char diretorioDeCriacao[]);
+void alteraNota(char diretorioDeCriacao[]);
 
 /// <Objetos>
 ofstream fout;
@@ -58,6 +60,9 @@ void chamaMenu() {
 		case 2:
 			excluirArquivo(diretorioDeCriacao);
 			break;
+		case 3:
+			alteraNota(diretorioDeCriacao);
+			break;
 		case 4:
 			dir(directoryPath);
 			break;
@@ -81,22 +86,15 @@ int criarNota(_TCHAR directoryPath[LS]) {
 	strcat(diretorioDeCriacao, ".bin");
 	fout.open(diretorioDeCriacao, ios::binary);
 	int tamanhoTitulo = strlen(titulo);
-	fout.write(titulo, tamanhoTitulo);
+	fin.read(titulo, tamanhoTitulo);
 	cout << "Nota criada com sucesso!";
 	fout.close();
 
-
 	// Obtendo o caminho do Desktop do usuário
 	if (SHGetFolderPath(NULL, CSIDL_DESKTOPDIRECTORY, NULL, 0, directoryPath) != S_OK) {
-		cerr << "Erro ao obter o diretório do Desktop" << endl;
+		cerr << "Erro ao obter o diretorio do Desktop" << endl;
 		return -1;
 	}
-}
-
-void alteraNota() {
-	char titulo[LS];
-	cout << " | Digite o titulo da nota que deseja alterar:";
-	cin >> titulo;
 }
 
 int dir(const _TCHAR* directoryPath) {
@@ -183,4 +181,62 @@ void excluirArquivo(char diretorioDeCriacao[]) {
 		return;
 	}
 	cout << "Arquivo excluido com sucesso." << endl;
+}
+int t = 0;
+void alteraNota(char diretorioDeCriacao[]) {
+	char titulo[LS];
+	_TCHAR directoryPathh[LS];
+	getUserName(diretorioDeCriacao);
+	if (SHGetFolderPath(NULL, CSIDL_DESKTOPDIRECTORY, NULL, 0, directoryPathh) != S_OK) {
+		cerr << "Erro ao obter o diretório do Desktop" << endl;
+		return;
+	}
+	dir(directoryPathh);
+	cout << " | Digite o titulo da nota que deseja alterar:";
+	cin >> titulo;
+	char guardaTitulo[LS];
+	strcpy(guardaTitulo, titulo);
+	strcpy(titulo, diretorioDeCriacao);
+	strcat(titulo, guardaTitulo);
+	strcat(titulo, ".bin");
+	fout.open(titulo, ios_base::app);
+	if (!fout.is_open()) {
+		cerr << "Erro ao abrir o arquivo. Encerrando.";
+		return;
+	}
+	cout << " | Comece a editar!" << endl;
+	string l1;
+	cin.ignore();
+	getline(cin, l1);
+	fout.write(l1.c_str(), l1.size());
+	fout.close();
+
+	int opc;
+	cout << " | Exibir nota?" << endl
+		 << " 1 - Sim\t2 - Nao" << endl;
+	cin >> opc;
+	switch (opc) {
+	case 1:
+		break;
+	case 2:
+		return;
+	default:
+		cerr << "Opcao invalida. Saindo.";
+		return;
+	}
+	t += l1.size();
+	char l2[LS];
+	fin.open(titulo, ios::binary);
+	if (!fin.is_open()) {
+		cerr << "Erro ao abrir o arquivo. Encerrando.";
+		return;
+	}
+	fin.read(l2, t);
+	cout << t << endl;
+	for (int i = 0; i < t; i++) {
+		cout << l2[i];
+	}
+	cout << endl;
+	fin.close();
+	cout << " | Fim do arquivo!" << endl;
 }
