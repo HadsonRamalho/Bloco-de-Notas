@@ -56,20 +56,23 @@ void chamaMenu() {
 		cin >> opcao;
 		switch (opcao) {
 		case 1:
+			system("CLS");
 			criarNota(directoryPath);
 			break;
 		case 2:
+			system("CLS");
 			excluirArquivo(diretorioDeCriacao);
 			break;
 		case 3:
+			system("CLS");
 			alteraNota(diretorioDeCriacao);
 			break;
 		case 4:
+			system("CLS");
 			dir(directoryPath);
 			break;
 		case 5:
 			break;
-
 		default:
 			cerr << "Opcao invalida. Tente novamente!" << endl;
 		}
@@ -88,7 +91,7 @@ int criarNota(_TCHAR directoryPath[LS]) {
 	fout.open(diretorioDeCriacao, ios::binary);
 	int tamanhoTitulo = strlen(titulo);
 	fin.read(titulo, tamanhoTitulo);
-	cout << "Nota criada com sucesso!";
+	cout << "Nota criada com sucesso!" << endl;
 	fout.close();
 
 	// Obtendo o caminho do Desktop do usuário
@@ -108,7 +111,7 @@ int dir(const _TCHAR* directoryPath) {
 	HANDLE hFind = FindFirstFile((basic_string<_TCHAR>(directoryPath) + _T("\\*")).c_str(), &findFileData);
 
 	if (hFind == INVALID_HANDLE_VALUE) {
-		cerr << "Erro ao abrir o diretorio" << endl;
+		cerr << "Erro ao abrir o diretorio | Tente criar uma nova nota" << endl;
 		return -1;
 	}
 
@@ -233,7 +236,7 @@ void alteraNota(char diretorioDeCriacao[]) {
 		return;
 	}
 	fin.read(l2, t);
-	cout << t << endl;
+	//cout << t << endl;
 	for (int i = 0; i < t; i++) {
 		cout << l2[i];
 	}
