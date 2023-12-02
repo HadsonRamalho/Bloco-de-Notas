@@ -30,7 +30,7 @@ int dir(const _TCHAR* directoryPath);
 void excluirArquivo(char diretorioDeCriacao[]);
 void alteraNota(char diretorioDeCriacao[]);
 
-/// <Objetos>
+/// <Objetos de manipulação de arquivo>
 ofstream fout;
 ifstream fin;
 
@@ -56,7 +56,7 @@ void chamaMenu() {
 		cin >> opcao;
 		switch (opcao) {
 		case 1:
-			system("CLS");
+			system("CLS"); //Limpa a tela antes de entrar na função selecionada
 			criarNota(directoryPath);
 			break;
 		case 2:
@@ -76,19 +76,19 @@ void chamaMenu() {
 		default:
 			cerr << "Opcao invalida. Tente novamente!" << endl;
 		}
-		system("PAUSE");
+		system("PAUSE"); //Pausa após o término da função escolhida
 	} while (opcao != 5);
 }
 
 int criarNota(_TCHAR directoryPath[LS]) {
 	char titulo[LS];
 	char diretorioDeCriacao[LS];
-	getUserName(diretorioDeCriacao); // 
+	getUserName(diretorioDeCriacao); //Recebe de volta o diretório do arquivo
 	cout << " | Qual o titulo da nota que deseja criar?" << endl;
 	cin >> titulo;
-	strcat(diretorioDeCriacao, titulo);
-	strcat(diretorioDeCriacao, ".bin");
-	fout.open(diretorioDeCriacao, ios::binary);
+	strcat(diretorioDeCriacao, titulo); //Concatena o diretório e o título
+	strcat(diretorioDeCriacao, ".bin"); //Adiciona a extensão do arquivo
+	fout.open(diretorioDeCriacao, ios::binary); //Abrindo o arquivo neste diretório
 	int tamanhoTitulo = strlen(titulo);
 	fin.read(titulo, tamanhoTitulo);
 	cout << "Nota criada com sucesso!" << endl;
@@ -150,7 +150,7 @@ void geraDiretorio(char username[], char diretorioDeCriacao[]) {
 	strcpy(diretorioDeCriacao, "");
 	strcat(diretorioDeCriacao, "C:\\Users\\");
 	strcat(diretorioDeCriacao, username);
-	strcat(diretorioDeCriacao, "\\Desktop\\");
+	strcat(diretorioDeCriacao, "\\Desktop\\"); //Escolhi o Desktop como diretório padrão
 }
 
 void excluirArquivo(char diretorioDeCriacao[]) {
@@ -175,11 +175,11 @@ void excluirArquivo(char diretorioDeCriacao[]) {
 		return;
 	}
 	getUserName(diretorioDeCriacao);
-	strcat(diretorioDeCriacao, arquivo_a_Excluir);
+	strcat(diretorioDeCriacao, arquivo_a_Excluir); 
 	strcat(diretorioDeCriacao, ".bin");
 	strcpy(arquivo_a_Excluir, diretorioDeCriacao); // arquivo_a_Excluir agora armazena o diretório completo, incluindo o nome e extensão
 	cout << arquivo_a_Excluir << endl;
-	// Verifica se o arquivo existe antes de tentar excluir
+	// Verifica se o arquivo existe e tenta excluir
 	if (remove(arquivo_a_Excluir) != 0) { 
 		cerr << "Erro ao excluir o arquivo." << endl;
 		return;
@@ -195,24 +195,24 @@ void alteraNota(char diretorioDeCriacao[]) {
 		cerr << "Erro ao obter o diretório do Desktop" << endl;
 		return;
 	}
-	dir(directoryPathh);
+	dir(directoryPathh); //Acessando o diretório das notas
 	cout << " | Digite o titulo da nota que deseja alterar:";
 	cin >> titulo;
 	char guardaTitulo[LS];
-	strcpy(guardaTitulo, titulo);
+	strcpy(guardaTitulo, titulo); 
 	strcpy(titulo, diretorioDeCriacao);
 	strcat(titulo, guardaTitulo);
-	strcat(titulo, ".bin");
+	strcat(titulo, ".bin"); //O titulo agora armazena o diretório(a nota) que o usuário digitou
 	fout.open(titulo, ios_base::app);
 	if (!fout.is_open()) {
 		cerr << "Erro ao abrir o arquivo. Encerrando.";
 		return;
 	}
 	cout << " | Comece a editar!" << endl;
-	string l1;
-	cin.ignore();
-	getline(cin, l1);
-	fout.write(l1.c_str(), l1.size());
+	string alterarNota;
+	cin.ignore(); //Limpando o buffer para usar o getline
+	getline(cin, alterarNota); //Lê até o usuário usar Enter
+	fout.write(alterarNota.c_str(), alterarNota.size());
 	fout.close();
 
 	int opc;
@@ -228,17 +228,17 @@ void alteraNota(char diretorioDeCriacao[]) {
 		cerr << "Opcao invalida. Saindo.";
 		return;
 	}
-	t += l1.size();
-	char l2[LS];
+	t += alterarNota.size(); // t armazena o tamanho total de caracteres na nota
+	char leNota[LS];
 	fin.open(titulo, ios::binary);
 	if (!fin.is_open()) {
 		cerr << "Erro ao abrir o arquivo. Encerrando.";
 		return;
 	}
-	fin.read(l2, t);
+	fin.read(leNota, t); // Lê os caracteres para dentro da string leNota
 	//cout << t << endl;
 	for (int i = 0; i < t; i++) {
-		cout << l2[i];
+		cout << leNota[i]; // Exibe cada caractere separadamente, incluindo espaços
 	}
 	cout << endl;
 	fin.close();
