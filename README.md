@@ -20,6 +20,9 @@ Certifique-se de ter um compilador C++ instalado em seu sistema. Você pode comp
 g++ main.cpp -o main.exe
 ./main.exe
 ```
+
+Ou rode o código na sua IDE preferida!
+
 Certifique-se de ajustar os comandos conforme o sistema operacional que você está utilizando.
 
 ## Observações
