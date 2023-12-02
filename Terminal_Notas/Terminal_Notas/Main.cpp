@@ -9,7 +9,7 @@
 using namespace std;
 
 /// <Constantes e globais>
-const int LS = 150; // Tamanho limite de strings
+const int LS = 260; // Tamanho limite de strings
 char diretorioDeCriacao[LS];
 int t = 0; // Controla o tamanho de exibição da função de alterar notas
 
@@ -147,7 +147,7 @@ void getUserName(char diretorioDeCriacao[]) {
 
 // Define o caminho onde o arquivo será salvo
 void geraDiretorio(char username[], char diretorioDeCriacao[]) {
-	strcpy(diretorioDeCriacao, "");
+	strcpy(diretorioDeCriacao, ""); //Limpa o conteúdo da variável
 	strcat(diretorioDeCriacao, "C:\\Users\\");
 	strcat(diretorioDeCriacao, username);
 	strcat(diretorioDeCriacao, "\\Desktop\\"); //Escolhi o Desktop como diretório padrão
@@ -236,7 +236,6 @@ void alteraNota(char diretorioDeCriacao[]) {
 		return;
 	}
 	fin.read(leNota, t); // Lê os caracteres para dentro da string leNota
-	//cout << t << endl;
 	for (int i = 0; i < t; i++) {
 		cout << leNota[i]; // Exibe cada caractere separadamente, incluindo espaços
 	}
