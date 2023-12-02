@@ -28,5 +28,5 @@ Certifique-se de ajustar os comandos conforme o sistema operacional que você es
 ## Observações
 O programa utiliza arquivos binários (.bin) para armazenar as notas.
 As notas são organizadas no Desktop do usuário.
-Certifique-se de que as bibliotecas necessárias, como <iostream>, <fstream>, <string>, <tchar.h>, <windows.h>, e <shlobj.h>, estão disponíveis no seu ambiente de desenvolvimento.
+Certifique-se de que as bibliotecas necessárias, como < iostream >, < fstream >, < string >, < tchar.h >, < windows.h >, e < shlobj.h >, estão disponíveis no seu ambiente de desenvolvimento.
 Sinta-se à vontade para usar, modificar e contribuir para este projeto!
