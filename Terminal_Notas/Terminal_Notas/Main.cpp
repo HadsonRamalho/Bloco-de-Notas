@@ -11,13 +11,13 @@ using namespace std;
 /// <Constantes e globais>
 const int LS = 260; // Tamanho limite de strings
 char diretorioDeCriacao[LS];
-int t = 0; // Controla o tamanho de exibição da função de alterar notas
+size_t t = 0; // Controla o tamanho de exibição da função de alterar notas
 
 #ifndef UNLEN // Verifica se UNLEN já foi definido
 #define UNLEN 256
 #endif
 
-extern "C" { 
+extern "C" {
 	WINBASEAPI BOOL WINAPI GetUserNameA(LPSTR, LPDWORD); // Obter o nome do usuário associado ao processo
 }
 
@@ -76,20 +76,20 @@ void chamaMenu() {
 		default:
 			cerr << "Opcao invalida. Tente novamente!" << endl;
 		}
-		system("PAUSE"); //Pausa após o término da função escolhida
+		system("PAUSE");
 	} while (opcao != 5);
 }
 
 int criarNota(_TCHAR directoryPath[LS]) {
-	char titulo[LS];
-	char diretorioDeCriacao[LS];
+	char* titulo = new char[LS];
+	char* diretorioDeCriacao = new char[LS];
 	getUserName(diretorioDeCriacao); //Recebe de volta o diretório do arquivo
 	cout << " | Qual o titulo da nota que deseja criar?" << endl;
 	cin >> titulo;
 	strcat(diretorioDeCriacao, titulo); //Concatena o diretório e o título
 	strcat(diretorioDeCriacao, ".bin"); //Adiciona a extensão do arquivo
 	fout.open(diretorioDeCriacao, ios::binary); //Abrindo o arquivo neste diretório
-	int tamanhoTitulo = strlen(titulo);
+	size_t tamanhoTitulo = strlen(titulo);
 	fin.read(titulo, tamanhoTitulo);
 	cout << "Nota criada com sucesso!" << endl;
 	fout.close();
@@ -99,6 +99,9 @@ int criarNota(_TCHAR directoryPath[LS]) {
 		cerr << "Erro ao obter o diretorio do Desktop" << endl;
 		return -1;
 	}
+	delete[] titulo;
+	delete[] diretorioDeCriacao;
+	return 0;
 }
 
 int dir(const _TCHAR* directoryPath) {
@@ -154,8 +157,8 @@ void geraDiretorio(char username[], char diretorioDeCriacao[]) {
 }
 
 void excluirArquivo(char diretorioDeCriacao[]) {
-	char arquivo_a_Excluir[LS];
-	char username[LS];
+	char* arquivo_a_Excluir = new char[LS];
+	char* username = new char[LS];
 	cout << " | Digite o nome do arquivo que deseja excluir [Sem a extensao]:";
 	cin >> arquivo_a_Excluir;
 	cout << " | Tem certeza?" << endl
@@ -175,21 +178,23 @@ void excluirArquivo(char diretorioDeCriacao[]) {
 		return;
 	}
 	getUserName(diretorioDeCriacao);
-	strcat(diretorioDeCriacao, arquivo_a_Excluir); 
+	strcat(diretorioDeCriacao, arquivo_a_Excluir);
 	strcat(diretorioDeCriacao, ".bin");
 	strcpy(arquivo_a_Excluir, diretorioDeCriacao); // arquivo_a_Excluir agora armazena o diretório completo, incluindo o nome e extensão
 	cout << arquivo_a_Excluir << endl;
 	// Verifica se o arquivo existe e tenta excluir
-	if (remove(arquivo_a_Excluir) != 0) { 
+	if (remove(arquivo_a_Excluir) != 0) {
 		cerr << "Erro ao excluir o arquivo." << endl;
 		return;
 	}
 	cout << "Arquivo excluido com sucesso." << endl;
+	delete[] arquivo_a_Excluir;
+	delete[] username;
 }
 
 void alteraNota(char diretorioDeCriacao[]) {
-	char titulo[LS];
-	_TCHAR directoryPathh[LS];
+	char* titulo = new char[LS];
+	_TCHAR* directoryPathh = new _TCHAR[LS];
 	getUserName(diretorioDeCriacao);
 	if (SHGetFolderPath(NULL, CSIDL_DESKTOPDIRECTORY, NULL, 0, directoryPathh) != S_OK) {
 		cerr << "Erro ao obter o diretório do Desktop" << endl;
@@ -198,8 +203,8 @@ void alteraNota(char diretorioDeCriacao[]) {
 	dir(directoryPathh); //Acessando o diretório das notas
 	cout << " | Digite o titulo da nota que deseja alterar:";
 	cin >> titulo;
-	char guardaTitulo[LS];
-	strcpy(guardaTitulo, titulo); 
+	char* guardaTitulo = new char[LS];
+	strcpy(guardaTitulo, titulo);
 	strcpy(titulo, diretorioDeCriacao);
 	strcat(titulo, guardaTitulo);
 	strcat(titulo, ".bin"); //O titulo agora armazena o diretório(a nota) que o usuário digitou
@@ -217,7 +222,7 @@ void alteraNota(char diretorioDeCriacao[]) {
 
 	int opc;
 	cout << " | Exibir nota?" << endl
-		 << " 1 - Sim\t2 - Nao" << endl;
+		<< " 1 - Sim\t2 - Nao" << endl;
 	cin >> opc;
 	switch (opc) {
 	case 1:
@@ -229,7 +234,7 @@ void alteraNota(char diretorioDeCriacao[]) {
 		return;
 	}
 	t += alterarNota.size(); // t armazena o tamanho total de caracteres na nota
-	char leNota[LS];
+	char* leNota = new char[LS];
 	fin.open(titulo, ios::binary);
 	if (!fin.is_open()) {
 		cerr << "Erro ao abrir o arquivo. Encerrando.";
@@ -242,4 +247,8 @@ void alteraNota(char diretorioDeCriacao[]) {
 	cout << endl;
 	fin.close();
 	cout << " | Fim do arquivo!" << endl;
+	delete[] titulo;
+	delete[] directoryPathh;
+	delete[] leNota;
+	delete[] guardaTitulo;
 }
