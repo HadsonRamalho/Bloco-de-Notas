@@ -29,6 +29,7 @@ void geraDiretorio(char username[], char diretorioDeCriacao[]);
 int dir(const _TCHAR* directoryPath);
 void excluirArquivo(char diretorioDeCriacao[]);
 void alteraNota(char diretorioDeCriacao[]);
+void exibe_apos_alterar(char titulo[]);
 
 /// <Objetos de manipulação de arquivo>
 ofstream fout;
@@ -192,6 +193,23 @@ void excluirArquivo(char diretorioDeCriacao[]) {
 	delete[] username;
 }
 
+void exibe_apos_alterar(char titulo[]) {
+	char* leNota = new char[LS];
+	fin.open(titulo, ios::binary);
+	if (!fin.is_open()) {
+		cerr << "Erro ao abrir o arquivo. Encerrando.";
+		return;
+	}
+	fin.read(leNota, t); // Lê os caracteres para dentro da string leNota
+	for (int i = 0; i < t; i++) {
+		cout << leNota[i]; // Exibe cada caractere separadamente, incluindo espaços
+	}
+	cout << endl;
+	fin.close();
+	cout << " | Fim do arquivo!" << endl;
+	delete[] leNota;
+}
+
 void alteraNota(char diretorioDeCriacao[]) {
 	char* titulo = new char[LS];
 	_TCHAR* directoryPathh = new _TCHAR[LS];
@@ -226,6 +244,7 @@ void alteraNota(char diretorioDeCriacao[]) {
 	cin >> opc;
 	switch (opc) {
 	case 1:
+		exibe_apos_alterar(titulo);
 		break;
 	case 2:
 		return;
@@ -234,21 +253,7 @@ void alteraNota(char diretorioDeCriacao[]) {
 		return;
 	}
 	t += alterarNota.size(); // t armazena o tamanho total de caracteres na nota
-	char* leNota = new char[LS];
-	fin.open(titulo, ios::binary);
-	if (!fin.is_open()) {
-		cerr << "Erro ao abrir o arquivo. Encerrando.";
-		return;
-	}
-	fin.read(leNota, t); // Lê os caracteres para dentro da string leNota
-	for (int i = 0; i < t; i++) {
-		cout << leNota[i]; // Exibe cada caractere separadamente, incluindo espaços
-	}
-	cout << endl;
-	fin.close();
-	cout << " | Fim do arquivo!" << endl;
 	delete[] titulo;
 	delete[] directoryPathh;
-	delete[] leNota;
 	delete[] guardaTitulo;
 }
